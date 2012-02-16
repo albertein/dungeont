@@ -41,5 +41,15 @@ function Game(canvas) {
         ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, 
 		     this.cellSize);
     };
+
+    this.log = function() {
+	if (!console.log)
+	    return;
+	var output = "";
+	for (var i = 0; i < arguments.length; i += 2) {
+	    output += arguments[i] + ": " + arguments[i + 1] + "; ";
+	}
+	console.log(output);
+    };
 }
   
