@@ -1,60 +1,67 @@
-function Game(canvas) {
-    this.context = canvas.getContext("2d");
-    var ctx = this.context;
-    ctx.lineWidth = 1;
-    this.width = 810;
-    this.height = 600;
-    this.cellSize = 30;
-    this.horizontalCells = this.width / this.cellSize;
-    this.verticalCells = this.height / this.cellSize;
-    this.rooms = [];
-    this.corridors = [];
-    this.random = function(maxNumber) {
-	return Math.floor(Math.random() * maxNumber);
-    }
-
-    this.init = function() {
-        this.paintBackground();
-	new Digger(this, 3, 2);
+var dungeont = {};
+dungeont.DIRECTION_NORTH = 0;
+dungeont.DIRECTION_EAST = 1;
+dungeont.DIRECTION_SOUTH = 2;
+dungeont.DIRECTION_WEST = 3;
+dungeont.log = function() {
+    if (!console)
+	return;
+    if (arguments.length % 2 !== 0) {
+	console.error("Arguments must be even");
+	return;
     };
-   
-    this.paintBackground = function() {
+    var log = "";
+    for (var i = 0; i < arguments.length; i += 2)
+	log += arguments[i] + ": " + arguments[i + 1] + "; ";
+    console.log(log);
+};
+dungeont.game  = (function() {
+    var canvas = null;
+    var ctx = null;
+    var width = 810;
+    var height = 600;
+    var cellSize = 30;
+    var horizontalCells = width / cellSize;
+    var verticalCells = height / cellSize;
+    var rooms = [];
+    var corridors = [];
+    var paintBackground = function() {
         ctx.fillStyle = "black";
-        ctx.fillRect(0, 0, this.width, this.height);
+        ctx.fillRect(0, 0, width, height);
         ctx.strokeStyle = "gray";
-        for (var i = this.cellSize; i < this.width; i += this.cellSize) {
+        for (var i = cellSize; i < width; i += cellSize) {
             ctx.moveTo(i, 0);
-            ctx.lineTo(i, this.height);
+            ctx.lineTo(i, height);
             ctx.stroke();
         }
-        for (var i = this.cellSize; i < this.height; i += this.cellSize) {
+        for (var i = cellSize; i < height; i += cellSize) {
             ctx.moveTo(0, i);
-            ctx.lineTo(this.width, i);
+            ctx.lineTo(width, i);
             ctx.stroke();
         }
     };
 
-    this.paintCell = function(x, y, color) {
-        if (color === undefined)
-	    color = "blue";
-	ctx.fillStyle = color;
-        ctx.fillRect(x * this.cellSize, y * this.cellSize, this.cellSize, 
-		     this.cellSize);
-    };
-
-    this.log = function() {
-	if (!console.log)
-	    return;
-	if ((arguments.length % 2) != 0) {
-	    if (!console.error) 
-		return;
-	    console.error("Argument list must be even");
+    return {
+	horizontalCells: horizontalCells,
+	verticalCells: verticalCells,
+	rooms: rooms,
+	corridors: corridors,
+	init: function(gameCanvas) {
+	    canvas = gameCanvas;
+	    ctx = canvas.getContext("2d");
+	    ctx.lindeWidth = 1;
+	    paintBackground();
+	    var digger = dungeont.digger();
+	    digger.init(3, 2);
+	},
+	random: function(maxNumber) {
+	    return Math.floor(Math.random() * maxNumber);
+	},
+	paintCell: function(x, y, color) {
+            if (color === undefined)
+		color = "blue";
+	    ctx.fillStyle = color;
+            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
 	}
-	var output = "";
-	for (var i = 0; i < arguments.length; i += 2) {
-	    output += arguments[i] + ": " + arguments[i + 1] + "; ";
-	}
-	console.log(output);
     };
-}
-  
+})();

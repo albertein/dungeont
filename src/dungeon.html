@@ -5,17 +5,16 @@
     <title>Dungeon Generator</title>
     <script type="text/javascript" src="jquery-1.7.1.min.js"></script>
     <script type="text/javascript">
-      var game = null;
+      
       $(document).ready(function() {
           var canvas = $("#canvas")[0];
-          game = new Game(canvas);
-          game.init();
+          dungeont.game.init(canvas);
           $("#refresh-button").click(function(){game.init();});
       });
     </script>
+    <script type="text/javascript" src="dungeon.js"></script>
     <script type="text/javascript" src="room.js"></script>
     <script type="text/javascript" src="digger.js"></script>
-    <script type="text/javascript" src="dungeon.js"></script>
 
 </head>
 <body>
