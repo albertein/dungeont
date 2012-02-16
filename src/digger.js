@@ -16,24 +16,13 @@ function Digger(game, initialWidth, initialHeight) {
     case 2: offsetY = 1; positionY = room.height - 1; break;
     case 3: offsetX = -1;positionX = 0; break;
     }
+
+    game.log("A", 3);
+    var corridor = new Corridor(room.x + positionX + offsetX,
+				room.y + positionY + offsetY,
+				direction,
+				game.random(7) + 1);
    
-    var corridor = new Corridor(room.x + positionX + offsetX, 
-				room.y + positionY + offsetY);
     game.corridors.push(corridor);
     corridor.paint();
-    for (var i = 0; i < 10; i++) {
-	var oldCorridor = corridor;
-	var newDirection;
-	while((newDirection = game.random(4)) == direction);
-	direction = newDirection;
-	var step = 1;
-	if (direction == 0 || direction == 3) step = -1;
-	corridor = new Corridor(
-	    (direction == 0 || direction == 2) ? oldCorridor.x + step :
-		oldCorridor.x,
-	    (direction == 1 || direction == 3) ? oldCorridor.y + step :
-		oldCorridor.y);
-	game.corridors.push(corridor);
-	corridor.paint();
-    }
 }
