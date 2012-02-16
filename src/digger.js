@@ -9,9 +9,9 @@ dungeont.digger = function() {
 		initialWidth, initialHeight);
 	    dungeont.game.rooms.push(room);
 	    room.paint();
-	    var direction = dungeont.game.random(4);
-	    var positionX = dungeont.game.random(room.width);
-	    var positionY = dungeont.game.random(room.height);
+	    var direction = dungeont.random(4);
+	    var positionX = dungeont.random(room.width);
+	    var positionY = dungeont.random(room.height);
 	    var offsetX = 0;
 	    var offsetY = 0;
 	    if (direction === dungeont.DIRECTION_NORTH) {
@@ -30,8 +30,8 @@ dungeont.digger = function() {
 
 	    var corridorDirection = (direction + 2) % 4;
 	    while (corridorDirection === (direction + 2) % 4)
-		corridorDirection = dungeont.game.random(4);
-	    var length = dungeont.game.random(7) + 3;
+		corridorDirection = dungeont.random(4);
+	    var length = dungeont.random(7) + 3;
 	    dungeont.log("l", length);
 	    var corridor = dungeont.corridor(room.x + positionX + offsetX, 
 					     room.y + positionY + offsetY,

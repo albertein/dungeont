@@ -15,6 +15,9 @@ dungeont.log = function() {
 	log += arguments[i] + ": " + arguments[i + 1] + "; ";
     console.log(log);
 };
+dungeont.random = function(maxNumber) {
+    return Math.floor(Math.random() * maxNumber);
+}
 dungeont.game  = (function() {
     var canvas = null;
     var ctx = null;
@@ -53,9 +56,6 @@ dungeont.game  = (function() {
 	    paintBackground();
 	    var digger = dungeont.digger();
 	    digger.init(3, 2);
-	},
-	random: function(maxNumber) {
-	    return Math.floor(Math.random() * maxNumber);
 	},
 	paintCell: function(x, y, color) {
             if (color === undefined)
