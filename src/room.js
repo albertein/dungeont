@@ -16,7 +16,6 @@ function Room(x, y, width, height) {
         return true;
     };
     this.paint = function() {
-	game.log("X", 0, "Y", 1, "A", 2, "B", 3);
         for (var i = 0; i < this.width; i++) {
             for (var j = 0; j < this.height; j++) {
                 game.paintCell(this.x + i, this.y + j);

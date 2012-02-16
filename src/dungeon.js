@@ -45,6 +45,11 @@ function Game(canvas) {
     this.log = function() {
 	if (!console.log)
 	    return;
+	if ((arguments.length % 2) != 0) {
+	    if (!console.error) 
+		return;
+	    console.error("Argument list must be even");
+	}
 	var output = "";
 	for (var i = 0; i < arguments.length; i += 2) {
 	    output += arguments[i] + ": " + arguments[i + 1] + "; ";

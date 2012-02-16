@@ -17,7 +17,6 @@ function Digger(game, initialWidth, initialHeight) {
     case 3: offsetX = -1;positionX = 0; break;
     }
 
-    game.log("A", 3);
     var corridor = new Corridor(room.x + positionX + offsetX,
 				room.y + positionY + offsetY,
 				direction,
