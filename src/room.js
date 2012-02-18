@@ -15,10 +15,9 @@ dungeont.room = function(x, y, width, height) {
 		return false; //no collision on Y axis
 	    return true;
 	},
-	paint: function(color) {
-	    for (var i = 0; i < width; i++)
-		for (var j = 0; j < height; j++)
-		    dungeont.game.paintCell(x + i, y + j, color);
+	contains: function(x, y) {
+	    return this.x <= x && this.x + width >= x &&
+		this.y <= y && this.y + height >= y;
 	}
     };
 };
