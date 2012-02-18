@@ -3,10 +3,11 @@ dungeont.digger = function() {
 	dig: function() {
 	    var cells = dungeont.game.horizontalCells * 
 		dungeont.game.verticalCells;
-	    var averageRoomArea = 36;
-	    var averageWhiteSpace = .2;
+	    var averageRoomArea = 50;
+	    var averageWhiteSpace = .6;
 	    var rooms = Math.floor(
 		cells * (1 - averageWhiteSpace) / averageRoomArea);
+	    console.log(rooms);
 	    var room = null;
 	    for (var i = 0; i < rooms; i++) {
 		var width, height, x, y;

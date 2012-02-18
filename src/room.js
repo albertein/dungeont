@@ -9,20 +9,30 @@ dungeont.room = function(x, y, width, height) {
 	height: height,
 	id: -1,
 	build: function() {
-	    for (var i = 0; i < width; i++) {
-		for (var j = 0; j < height; j++) {
-		    dungeont.game.map[x + i][y + j] = dungeont.MAP_ROOM;
+	    for (var i = -1; i <= width; i++) {
+		for (var j = -1; j <= height; j++) {
+		    var cellType = dungeont.MAP_ROOM;
+		    if (i === -1 || i === width || j === -1 || j === height)
+			cellType = dungeont.MAP_WALL;
+		    dungeont.game.map[x + i][y + j] = cellType;
 		}
 	    }
 	    dungeont.game.rooms.push(this);
 	    this.id = ++id;
 	},
 	hasIntersect: function() {
-	    for (var i = 0; i < width; i++)
-		for (var j = 0; j < height; j++)
+	    for (var i = -1; i <= width; i++) {
+		for (var j = -1; j <= height; j++) {
+		    if ((i + x) === -1 || 
+			(i + x) === dungeont.horizontalCells ||
+			(j + y) === -1 ||
+			(j + y) === dungeont.verticalCells)
+			return true; //avoid falling of the board
 		    if (dungeont.game.map[x + i][y + j] & 0x3 !== 
 			dungeont.MAP_EMPTY)
 			return true;
+		}
+	    }
 	    return false;
 	},
 	intersects: function(room) {
