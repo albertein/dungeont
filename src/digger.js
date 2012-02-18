@@ -22,9 +22,82 @@ dungeont.digger = function() {
 		while(room.hasIntersect()) {
 		    tryCreateRoom();
 		}
-		dungeont.log("x", room.x, "y", room.y, "w", room.width, "h", room.height);
 		room.build();
 	    }
+
+	    //Build corridors
+	    var createPath = function(startX, startY, comesFrom) {
+		var directions = [ 
+		    dungeont.DIRECTION_NORTH,
+		    dungeont.DIRECTION_EAST,
+		    dungeont.DIRECTION_SOUTH,
+		    dungeont.DIRECTION_WEST
+		];
+		var cellType = dungeont.game.map[startX][startY] &
+		    dungeont.MAP_MASK;
+		if (cellType !== dungeont.MAP_CORRIDOR &&
+		    cellType !== dungeont.MAP_EMPTY)
+		    return false;
+		dungeont.game.map[startX][startY] = dungeont.MAP_CORRIDOR;
+		var foundDoor = false;
+		var points = [];
+		for (var i = 0; i < directions.length; i++) {
+		    if (directions[i] === comesFrom)
+			continue;
+		    var deltaX = 0;
+		    var deltaY = 0;
+		    if (directions[i] === dungeont.DIRECTION_NORTH) 
+			deltaY = -1;
+		    else if (directions[i] === dungeont.DIRECTION_EAST)
+			deltaX = 1;
+		    else if (directions[i] === dungeont.DIRECTION_SOUTH)
+			deltaY = 1;
+		    else //DIRECTION_WEST
+			deltaX = -1;
+		    var x = startX;
+		    var y = startY;
+		    var pointsOnTunnel = [];
+		    for (var j = 0; j < 4; j++) {
+			x += deltaX;
+			y += deltaY;
+			var cellType = dungeont.game.map[x][y] & 
+			    dungeont.MAP_MASK;
+			if (cellType === dungeont.MAP_DOOR) {
+			    foundDoor = true;
+			    console.log("FOOOUND!!");
+			    break; //Stop digging in this direction
+			}
+			if (cellType === dungeont.MAP_WALL)
+			    break; //Stop digging in this direction
+			if (cellType === dungeont.MAP_CORRIDOR) {
+			    for (var z = 0; z < pointsOnTunnel.length; z++) {
+				var point = pointsOnTunnel[z];
+				dungeont.game.map[point.x][point.y] = dungeont.MAP_WALL;
+			    }
+			    break; //Stop digging in this direction
+			}
+			var coord = {x: x, y: y};
+			points.push({x: x, y: y});
+			pointsOnTunnel.push({x: x, y: y});
+			dungeont.game.map[x][y] = dungeont.MAP_CORRIDOR;
+		    }
+		    if (j !== 0) {
+			var doorOnSubpath = createPath(x, y, (directions[i] + 2) % 4);
+			foundDoor = foundDoor || doorOnSubpath;
+		    }
+
+		}
+		if (!foundDoor) {
+		    console.log(points.length);
+		    for (var i = 0; i < points.length; i++) {
+			dungeont.game.map[points[i].x][points[i].y] =
+			    dungeont.MAP_EMPTY;
+		    }
+		}
+
+		return foundDoor;
+	    };
+	    createPath(1, 1, dungeont.DIRECTION_NORTH);
 	},
 	init: function(initialWidth, initialHeight) {	
 	    var room = dungeont.room(

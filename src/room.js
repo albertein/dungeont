@@ -18,7 +18,7 @@ dungeont.room = function(x, y, width, height) {
 		}
 	    }
 	    //generate doors
-	    var doors = dungeont.random(4) + 1;
+	    var doors = dungeont.random(4) + 1; //how many doors?
 	    var positions = [
 		dungeont.DIRECTION_NORTH,
 		dungeont.DIRECTION_EAST,
@@ -26,15 +26,17 @@ dungeont.room = function(x, y, width, height) {
 		dungeont.DIRECTION_WEST
 	    ];
 
-	    dungeont.log("d", doors);
-	    for (var i = 0; i < 4 - doors; i++) {
-		var delete_position = dungeont.random(4);
+	    //remove door positions that will not be needed
+	    //at random
+	    for (var i = 0; i < 4 - doors; i++) { 
+		var delete_position = dungeont.random(4); 
 		console.log(delete_position);
 		while(positions[delete_position] === -1)
 		    delete_position = dungeont.random(4);
 		positions[delete_position] = -1;
 	    }
 
+	    //generate doors at room walls
 	    for (var i = 0; i < positions.length; i++) {
 		var position = positions[i];
 		if (position === -1)
