@@ -28,7 +28,7 @@ dungeont.room = function(x, y, width, height) {
 			(j + y) === -1 ||
 			(j + y) === dungeont.verticalCells)
 			return true; //avoid falling of the board
-		    if (dungeont.game.map[x + i][y + j] & 0x3 !== 
+		    if (dungeont.game.map[x + i][y + j] & dungeont.MAP_MASK !== 
 			dungeont.MAP_EMPTY)
 			return true;
 		}

@@ -7,7 +7,8 @@ dungeont.MAP_EMPTY = 0;
 dungeont.MAP_WALL = 1;
 dungeont.MAP_ROOM = 2;
 dungeont.MAP_CORRIDOR = 3;
-
+dungeont.MAP_DOOR = 4;
+dungeont.MAP_MASK = 0x7;
 dungeont.log = function() {
     if (!console)
 	return;
@@ -72,13 +73,13 @@ dungeont.game  = (function() {
 	for (var i = 0; i < map.length; i++) {
 	    for (var j = 0; j < map[i].length; j++) {
 		var cell = map[i][j];
-		var cellType = cell & 0x3;
+		var cellType = cell & dungeont.MAP_MASK;
 		if (cellType === dungeont.MAP_EMPTY)
 		    continue;
 		var colors = [];
-		colors[dungeont.MAP_WALL] = "gray";
-		colors[dungeont.MAP_ROOM] = "blue";
-		colors[dungeont.MAP_CORRIDOR] = "green";
+		colors[dungeont.MAP_WALL] = "rgb(60, 60, 60)";
+		colors[dungeont.MAP_ROOM] = "white";
+		colors[dungeont.MAP_CORRIDOR] = "rgb(20, 255, 0)";
 		paintCell(i, j, colors[cellType]);
 	    }
 	}
