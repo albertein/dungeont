@@ -2,7 +2,8 @@ dungeont.digger = function() {
     var initialWidth; 
     var initialHeight;
     return {
-	init: function(initialWidth, initialHeight) {
+
+	init: function(initialWidth, initialHeight) {	
 	    var room = dungeont.room(
 		dungeont.game.horizontalCells / 2 - initialWidth / 2,
 		dungeont.game.verticalCells / 2 - initialHeight / 2, 

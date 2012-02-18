@@ -3,6 +3,11 @@ dungeont.DIRECTION_NORTH = 0;
 dungeont.DIRECTION_EAST = 1;
 dungeont.DIRECTION_SOUTH = 2;
 dungeont.DIRECTION_WEST = 3;
+dungeont.MAP_EMPTY = 0;
+dungeont.MAP_WALL = 1;
+dungeont.MAP_ROOM = 2;
+dungeont.MAP_CORRIDOR = 3;
+
 dungeont.log = function() {
     if (!console)
 	return;
@@ -23,11 +28,23 @@ dungeont.game  = (function() {
     var ctx = null;
     var width = 810;
     var height = 600;
-    var cellSize = 30;
+    var cellSize = 15;
     var horizontalCells = width / cellSize;
     var verticalCells = height / cellSize;
     var rooms = [];
     var corridors = [];
+    var map = new Array(horizontalCells);
+    for (var i = 0; i < horizontalCells; i++) {
+	map[i] = new Array(verticalCells);
+	for (var j = 0; j < verticalCells; j++) {
+	    if (i === 0 || i === horizontalCells - 1 ||
+		j === 0 || j === verticalCells - 1)
+		map[i][j] = dungeont.MAP_WALL; //build perimetral wall
+	    else
+		map[i][j] = dungeont.MAP_EMPTY;
+	}
+    }
+    
     var paintBackground = function() {
         ctx.fillStyle = "black";
         ctx.fillRect(0, 0, width, height);
@@ -44,24 +61,39 @@ dungeont.game  = (function() {
         }
     };
 
+    var paintCell = function(x, y, color) {
+	ctx.fillStyle = color;
+        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+    }
+
+    var render = function() {
+	paintBackground();
+	for (var i = 0; i < map.length; i++) {
+	    for (var j = 0; j < map[i].length; j++) {
+		var cell = map[i][j];
+		var cellType = cell & 0x3;
+		if (cellType === dungeont.MAP_EMPTY)
+		    continue;
+		var colors = [];
+		colors[dungeont.MAP_WALL] = "gray";
+		colors[dungeont.MAP_ROOM] = "blue";
+		colors[dungeont.MAP_CORRIDOR] = "green";
+		paintCell(i, j, colors[cellType]);
+	    }
+	}
+    }
+
     return {
 	horizontalCells: horizontalCells,
 	verticalCells: verticalCells,
 	rooms: rooms,
-	corridors: corridors,
+	map: map,
 	init: function(gameCanvas) {
 	    canvas = gameCanvas;
 	    ctx = canvas.getContext("2d");
 	    ctx.lindeWidth = 1;
-	    paintBackground();
-	    var digger = dungeont.digger();
-	    digger.init(3, 2);
+	    render(); 
 	},
-	paintCell: function(x, y, color) {
-            if (color === undefined)
-		color = "blue";
-	    ctx.fillStyle = color;
-            ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-	}
+	paintCell: null
     };
 })();
