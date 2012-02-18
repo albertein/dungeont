@@ -64,7 +64,7 @@ dungeont.game  = (function() {
     var paintCell = function(x, y, color) {
 	ctx.fillStyle = color;
         ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
-    }
+    };
 
     var render = function() {
 	paintBackground();
