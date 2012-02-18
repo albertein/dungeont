@@ -13,10 +13,50 @@ dungeont.room = function(x, y, width, height) {
 		for (var j = -1; j <= height; j++) {
 		    var cellType = dungeont.MAP_ROOM;
 		    if (i === -1 || i === width || j === -1 || j === height)
-			cellType = dungeont.MAP_WALL;
+			cellType = dungeont.MAP_WALL; //perimetral wall
 		    dungeont.game.map[x + i][y + j] = cellType;
 		}
 	    }
+	    //generate doors
+	    var doors = dungeont.random(4) + 1;
+	    var positions = [
+		dungeont.DIRECTION_NORTH,
+		dungeont.DIRECTION_EAST,
+		dungeont.DIRECTION_SOUTH,
+		dungeont.DIRECTION_WEST
+	    ];
+
+	    dungeont.log("d", doors);
+	    for (var i = 0; i < 4 - doors; i++) {
+		var delete_position = dungeont.random(4);
+		console.log(delete_position);
+		while(positions[delete_position] === -1)
+		    delete_position = dungeont.random(4);
+		positions[delete_position] = -1;
+	    }
+
+	    for (var i = 0; i < positions.length; i++) {
+		var position = positions[i];
+		if (position === -1)
+		    continue;
+		var doorX = 0;
+		var doorY = 0;
+		if (position === dungeont.DIRECTION_NORTH) {
+		    doorY = y - 1;
+		    doorX = x + dungeont.random(width);
+		} else if (position === dungeont.DIRECTION_EAST) {
+		    doorX = x + width;
+		    doorY = y + dungeont.random(height);
+		} else if (position === dungeont.DIRECTION_SOUTH) {
+		    doorY = y + height;
+		    doorX = x + dungeont.random(width);
+		} else { //DIRECTION_WEST
+		    doorX = x - 1;
+		    doorY = y + dungeont.random(height);
+		}
+		dungeont.game.map[doorX][doorY] = dungeont.MAP_DOOR;
+	    }
+	    
 	    dungeont.game.rooms.push(this);
 	    this.id = ++id;
 	},
