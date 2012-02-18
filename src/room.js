@@ -1,11 +1,30 @@
 dungeont.room = function(x, y, width, height) {
     x = Math.floor(x);
     y = Math.floor(y);
+    var id = 0;
     return {
 	x: x,
 	y: y,
 	width: width,
 	height: height,
+	id: -1,
+	build: function() {
+	    for (var i = 0; i < width; i++) {
+		for (var j = 0; j < height; j++) {
+		    dungeont.game.map[x + i][y + j] = dungeont.MAP_ROOM;
+		}
+	    }
+	    dungeont.game.rooms.push(this);
+	    this.id = ++id;
+	},
+	hasIntersect: function() {
+	    for (var i = 0; i < width; i++)
+		for (var j = 0; j < height; j++)
+		    if (dungeont.game.map[x + i][y + j] & 0x3 !== 
+			dungeont.MAP_EMPTY)
+			return true;
+	    return false;
+	},
 	intersects: function(room) {
 	    if ((room.x < x || room.x > x) ||
 		(room.x + room.width < x || room.x + room.width > x))

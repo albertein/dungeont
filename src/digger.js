@@ -1,8 +1,30 @@
 dungeont.digger = function() {
-    var initialWidth; 
-    var initialHeight;
     return {
-
+	dig: function() {
+	    var cells = dungeont.game.horizontalCells * 
+		dungeont.game.verticalCells;
+	    var averageRoomArea = 36;
+	    var averageWhiteSpace = .2;
+	    var rooms = Math.floor(
+		cells * (1 - averageWhiteSpace) / averageRoomArea);
+	    var room = null;
+	    for (var i = 0; i < rooms; i++) {
+		var width, height, x, y;
+		var tryCreateRoom = function() {
+		    width = dungeont.random(3) + 3;
+		    height = dungeont.random(3) + 3;
+		    x = dungeont.random(dungeont.game.horizontalCells);
+		    y = dungeont.random(dungeont.game.verticalCells);
+		    room = dungeont.room(x, y, width, height);
+		};
+		tryCreateRoom();
+		while(room.hasIntersect()) {
+		    tryCreateRoom();
+		}
+		dungeont.log("x", room.x, "y", room.y, "w", room.width, "h", room.height);
+		room.build();
+	    }
+	},
 	init: function(initialWidth, initialHeight) {	
 	    var room = dungeont.room(
 		dungeont.game.horizontalCells / 2 - initialWidth / 2,

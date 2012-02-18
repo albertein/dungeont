@@ -67,6 +67,7 @@ dungeont.game  = (function() {
     };
 
     var render = function() {
+	console.log(dungeont.game.map);
 	paintBackground();
 	for (var i = 0; i < map.length; i++) {
 	    for (var j = 0; j < map[i].length; j++) {
@@ -92,6 +93,8 @@ dungeont.game  = (function() {
 	    canvas = gameCanvas;
 	    ctx = canvas.getContext("2d");
 	    ctx.lindeWidth = 1;
+	    var digger = dungeont.digger();
+	    digger.dig();
 	    render(); 
 	},
 	paintCell: null
