@@ -103,7 +103,7 @@ dungeont.digger = function() {
 		    if (!doorInPath) {
 			for (var z = 0; z < points.length; z++) {
 			    dungeont.game.map[points[z].x][points[z].y] =
-				dungeont.MAP_WALL;
+				dungeont.MAP_EMPTY;
 			}
 		    }
 

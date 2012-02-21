@@ -79,7 +79,7 @@ dungeont.game  = (function() {
 		var colors = [];
 		colors[dungeont.MAP_WALL] = "rgb(60, 60, 60)";
 		colors[dungeont.MAP_ROOM] = "white";
-		colors[dungeont.MAP_CORRIDOR] = "rgb(20, 255, 0)";
+		colors[dungeont.MAP_CORRIDOR] = "white";
 		colors[dungeont.MAP_DOOR] = "white";
 		paintCell(i, j, colors[cellType]);
 	    }
