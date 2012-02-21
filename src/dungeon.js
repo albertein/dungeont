@@ -99,7 +99,7 @@ dungeont.game  = (function() {
 	    digger.dig();
 	    render(); 
 	},
-	getCellType = function(x, y) {
+	getCellType: function(x, y) {
 	    return map[x][y] & dungeont.MAP_MASK;
 	}
     };
