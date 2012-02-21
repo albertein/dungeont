@@ -40,7 +40,6 @@ dungeont.digger = function() {
 		    return false;
 		dungeont.game.map[startX][startY] = dungeont.MAP_CORRIDOR;
 		var foundDoor = false;
-		var points = [];
 		for (var i = 0; i < directions.length; i++) {
 		    if (directions[i] === comesFrom)
 			continue;
@@ -56,43 +55,37 @@ dungeont.digger = function() {
 			deltaX = -1;
 		    var x = startX;
 		    var y = startY;
-		    var pointsOnTunnel = [];
+		    var points = [];
+		    var doorInPath = false;
 		    for (var j = 0; j < 4; j++) {
 			x += deltaX;
 			y += deltaY;
 			var cellType = dungeont.game.map[x][y] & 
 			    dungeont.MAP_MASK;
 			if (cellType === dungeont.MAP_DOOR) {
-			    foundDoor = true;
-			    console.log("FOOOUND!!");
-			    break; //Stop digging in this direction
+			    doorInPath = true;
+			    break; //Stop digging, found door
 			}
 			if (cellType === dungeont.MAP_WALL)
 			    break; //Stop digging in this direction
-			if (cellType === dungeont.MAP_CORRIDOR) {
-			    for (var z = 0; z < pointsOnTunnel.length; z++) {
-				var point = pointsOnTunnel[z];
-				dungeont.game.map[point.x][point.y] = dungeont.MAP_WALL;
-			    }
+			if (cellType === dungeont.MAP_CORRIDOR) 
 			    break; //Stop digging in this direction
-			}
-			var coord = {x: x, y: y};
 			points.push({x: x, y: y});
-			pointsOnTunnel.push({x: x, y: y});
 			dungeont.game.map[x][y] = dungeont.MAP_CORRIDOR;
 		    }
 		    if (j !== 0) {
-			var doorOnSubpath = createPath(x, y, (directions[i] + 2) % 4);
-			foundDoor = foundDoor || doorOnSubpath;
+			var doorInChild = 
+			    createPath(x, y, (directions[i] + 2) % 4);
+			doorInPath = doorInPath || doorInChild;
+		    }
+		    foundDoor = foundDoor || doorInPath;
+		    if (!doorInPath) {
+			for (var z = 0; z < points.length; z++) {
+			    dungeont.game.map[points[z].x][points[z].y] =
+				dungeont.MAP_WALL;
+			}
 		    }
 
-		}
-		if (!foundDoor) {
-		    console.log(points.length);
-		    for (var i = 0; i < points.length; i++) {
-			dungeont.game.map[points[i].x][points[i].y] =
-			    dungeont.MAP_EMPTY;
-		    }
 		}
 
 		return foundDoor;
