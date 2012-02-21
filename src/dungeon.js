@@ -99,6 +99,8 @@ dungeont.game  = (function() {
 	    digger.dig();
 	    render(); 
 	},
-	paintCell: null
+	getCellType = function(x, y) {
+	    return map[x][y] & dungeont.MAP_MASK;
+	}
     };
 })();

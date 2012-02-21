@@ -69,8 +69,7 @@ dungeont.digger = function() {
 		    for (var j = 0; j < 4; j++) {
 			x += deltaX;
 			y += deltaY;
-			var cellType = dungeont.game.map[x][y] & 
-			    dungeont.MAP_MASK;
+			var cellType = dungeont.game.getCellType(x, y);
 			if (cellType === dungeont.MAP_DOOR) {
 			    doorInPath = true;
 			    break; //Stop digging, found door
