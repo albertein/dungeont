@@ -78,10 +78,21 @@ dungeont.digger = function() {
 			    break; //Stop digging in this direction
 			if (cellType === dungeont.MAP_CORRIDOR) 
 			    break; //Stop digging in this direction
+			//If there is any door in the adjacent cells find it
+			//and mark the door on the current path
+			if (dungeont.game.getCellType(x + 1, y) === 
+			    dungeont.MAP_DOOR ||
+			    dungeont.game.getCellType(x - 1, y) === 
+			    dungeont.MAP_DOOR ||
+			    dungeont.game.getCellType(x, y + 1) ===
+			    dungeont.MAP_DOOR ||
+			    dungeont.game.getCellType(x, y - 1) ===
+			    dungeont.MAP_DOOR)
+			    doorInPath = true;
 			points.push({x: x, y: y});
 			dungeont.game.map[x][y] = dungeont.MAP_CORRIDOR;
 		    }
-		    if (j !== 0) {
+		    if (j !== 0) { 
 			var doorInChild = 
 			    createPath(x, y, (directions[i] + 2) % 4);
 			doorInPath = doorInPath || doorInChild;
