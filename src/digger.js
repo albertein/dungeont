@@ -33,6 +33,15 @@ dungeont.digger = function() {
 		    dungeont.DIRECTION_SOUTH,
 		    dungeont.DIRECTION_WEST
 		];
+		//shuffle the direction array to spice a little bit the dungeon
+		for (var i = 0; i < directions.length; i++) { 
+		    var newPosition = dungeont.random(directions.length);
+		    var a = directions[i];
+		    var b = directions[newPosition];
+		    directions[newPosition] = a;
+		    directions[i] = b;
+		}
+		console.log(directions);
 		var cellType = dungeont.game.map[startX][startY] &
 		    dungeont.MAP_MASK;
 		if (cellType !== dungeont.MAP_CORRIDOR &&
@@ -79,6 +88,8 @@ dungeont.digger = function() {
 			doorInPath = doorInPath || doorInChild;
 		    }
 		    foundDoor = foundDoor || doorInPath;
+		    //If the current path or any of its children were unable to find
+		    //a door, we need to destroy de unnesesary path
 		    if (!doorInPath) {
 			for (var z = 0; z < points.length; z++) {
 			    dungeont.game.map[points[z].x][points[z].y] =
