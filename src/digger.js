@@ -24,7 +24,7 @@ dungeont.digger = function() {
 		}
 		room.build();
 	    }
-
+	    
 	    //Build corridors
 	    var createPath = function(startX, startY, comesFrom) {
 		var directions = [ 

@@ -2,6 +2,10 @@ dungeont.room = function(x, y, width, height) {
     x = Math.floor(x);
     y = Math.floor(y);
     var id = 0;
+    var contains = function(pointX, pointY) {
+	return pointX >= x && pointX < x + width && pointY >= y && 
+	    pointY < y + height;
+    };
     return {
 	x: x,
 	y: y,
@@ -25,40 +29,45 @@ dungeont.room = function(x, y, width, height) {
 		dungeont.DIRECTION_SOUTH,
 		dungeont.DIRECTION_WEST
 	    ];
-
-	    //remove door positions that will not be needed
-	    //at random
-	    for (var i = 0; i < 4 - doors; i++) { 
-		var delete_position = dungeont.random(4); 
-		console.log(delete_position);
-		while(positions[delete_position] === -1)
-		    delete_position = dungeont.random(4);
-		positions[delete_position] = -1;
-	    }
-
+	    dungeont.shuffle(positions);
 	    //generate doors at room walls
 	    for (var i = 0; i < positions.length; i++) {
+		if (doors === 0)
+		    break; //Break if we added the desired doors
 		var position = positions[i];
 		if (position === -1)
 		    continue;
 		var doorX = 0;
 		var doorY = 0;
+		var calcDoorPosition = function (baseCoord, baseDimention) {
+		    var posibleDoors = [];
+		    for (var j = 0; j < baseDimention; j++)  
+			if (((baseCoord + j) - 1) % 4 === 0)
+			    posibleDoors.push(baseCoord + j);
+		    if (posibleDoors.length === 0)
+			return -1;
+		    return posibleDoors[dungeont.random(posibleDoors.length)]
+		};
 		if (position === dungeont.DIRECTION_NORTH) {
 		    doorY = y - 1;
-		    doorX = x + dungeont.random(width);
+		    doorX = calcDoorPosition(x, width);
 		} else if (position === dungeont.DIRECTION_EAST) {
 		    doorX = x + width;
-		    doorY = y + dungeont.random(height);
+		    doorY = calcDoorPosition(y, height);
 		} else if (position === dungeont.DIRECTION_SOUTH) {
 		    doorY = y + height;
-		    doorX = x + dungeont.random(width);
+		    doorX = calcDoorPosition(x, width);
 		} else { //DIRECTION_WEST
 		    doorX = x - 1;
-		    doorY = y + dungeont.random(height);
+		    doorY = calcDoorPosition(y, height);
 		}
+		if (doorX === -1 || doorY === -1)
+		    continue; //Cannot place door at this position
+		doors--;
+		dungeont.log("x", doorX, "y", doorY);
 		dungeont.game.map[doorX][doorY] = dungeont.MAP_DOOR;
 	    }
-	    
+
 	    dungeont.game.rooms.push(this);
 	    this.id = ++id;
 	},
@@ -86,9 +95,6 @@ dungeont.room = function(x, y, width, height) {
 		return false; //no collision on Y axis
 	    return true;
 	},
-	contains: function(x, y) {
-	    return this.x <= x && this.x + width >= x &&
-		this.y <= y && this.y + height >= y;
-	}
+	contains: contains
     };
 };
