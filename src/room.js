@@ -2,16 +2,23 @@ dungeont.room = function(x, y, width, height) {
     x = Math.floor(x);
     y = Math.floor(y);
     var id = 0;
-    var contains = function(pointX, pointY) {
-	return pointX >= x && pointX < x + width && pointY >= y && 
-	    pointY < y + height;
+    var contains = function(pointX, pointY, includeWall) {
+	var wallOffset = 0;
+	if(includeWall) 
+	    wallOffset = 1;
+	return pointX >= x - wallOffset && 
+	    pointX < x + width + wallOffset && 
+	    pointY >= y - wallOffset && 
+	    pointY < y + height + wallOffset;
     };
+    var roomDoors = [];
     return {
 	x: x,
 	y: y,
 	width: width,
 	height: height,
 	id: -1,
+	doors: roomDoors,
 	build: function() {
 	    for (var i = -1; i <= width; i++) {
 		for (var j = -1; j <= height; j++) {
@@ -65,6 +72,12 @@ dungeont.room = function(x, y, width, height) {
 		if (doorX === -1 || doorY === -1)
 		    continue; //Cannot place door at this position
 		doors--;
+		roomDoors.push({
+		    x: doorX,
+		    y: doorY,
+		    direction: position,
+		    connected: false
+		});
 		dungeont.game.map[doorX][doorY] = dungeont.MAP_DOOR;
 	    }
 
@@ -95,6 +108,12 @@ dungeont.room = function(x, y, width, height) {
 		return false; //no collision on Y axis
 	    return true;
 	},
-	contains: contains
+	contains: contains,
+	doorAtPoint: function(x, y) {
+	    for (var i = 0; i < roomDoors.length; i++) 
+		if (roomDoors[i].x === x && roomDoors[i].y === y)
+		    return roomDoors[i];
+	    return null;
+	}
     };
 };

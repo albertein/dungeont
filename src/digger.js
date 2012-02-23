@@ -25,7 +25,7 @@ dungeont.digger = function() {
 	    }
 	    
 	    //Build corridors
-	    var createPath = function(startX, startY, comesFrom) {
+	    var createPath = function(startX, startY, comesFrom, secondTake) {
 		var directions = [ 
 		    dungeont.DIRECTION_NORTH,
 		    dungeont.DIRECTION_EAST,
@@ -37,9 +37,11 @@ dungeont.digger = function() {
 		var cellType = dungeont.game.map[startX][startY] &
 		    dungeont.MAP_MASK;
 		if (cellType !== dungeont.MAP_CORRIDOR &&
-		    cellType !== dungeont.MAP_EMPTY)
+		    cellType !== dungeont.MAP_EMPTY && cellType !== dungeont.MAP_SPECIAL)
 		    return false;
 		dungeont.game.map[startX][startY] = dungeont.MAP_CORRIDOR;
+		if (secondTake)
+		    dungeont.game.map[startX][startY] = dungeont.MAP_SPECIAL;
 		var foundDoor = false;
 		for (var i = 0; i < directions.length; i++) {
 		    if (directions[i] === comesFrom)
@@ -63,13 +65,19 @@ dungeont.digger = function() {
 			y += deltaY;
 			var cellType = dungeont.game.getCellType(x, y);
 			if (cellType === dungeont.MAP_DOOR) {
+			    var room = dungeont.game.roomAtPoint(x, y, true);
+			    room.doorAtPoint(x, y).connected = true;
 			    doorInPath = true;
+			    if (secondTake)
+				return true;
 			    break; //Stop digging, found door
 			}
 			if (cellType === dungeont.MAP_WALL)
 			    break; //Stop digging in this direction
-			if (cellType === dungeont.MAP_CORRIDOR) 
+			if (cellType === dungeont.MAP_CORRIDOR || cellType === dungeont.MAP_SPECIAL) {
+			    if(secondTake) return true;
 			    break; //Stop digging in this direction
+			}
 			//If there is any door in the adjacent cells find it
 			//and mark the door on the current path
 			if (dungeont.game.getCellType(x + 1, y) === 
@@ -83,13 +91,17 @@ dungeont.digger = function() {
 			    doorInPath = true;
 			points.push({x: x, y: y});
 			dungeont.game.map[x][y] = dungeont.MAP_CORRIDOR;
-		    }
+			if (secondTake)
+			    dungeont.game.map[x][y] = dungeont.MAP_SPECIAL;		
+    }
 		    if (j !== 0) { 
-			var doorInChild = 
-			    createPath(x, y, (directions[i] + 2) % 4);
+			var doorInChild = createPath(x, y, 
+						     (directions[i] + 2) % 4,
+						    secondTake);
 			doorInPath = doorInPath || doorInChild;
 		    }
 		    foundDoor = foundDoor || doorInPath;
+		    if (foundDoor && secondTake) return true;
 		    //If the current path or any of its children were unable to find
 		    //a door, we need to destroy de unnesesary path
 		    if (!doorInPath) {
@@ -104,6 +116,26 @@ dungeont.digger = function() {
 		return foundDoor;
 	    };
 	    createPath(1, 1, dungeont.DIRECTION_NORTH);
+	    //Fix the unconnected doors to try to connect them to the main dungeon
+	    for (var i = 0; i < dungeont.game.rooms.length; i++) {
+		var room = dungeont.game.rooms[i];
+		for (var j = 0; j < room.doors.length; j++) {
+		    var door = room.doors[j];
+		    var dX = 0;
+		    var dY = 0;
+		    if (door.direction === dungeont.DIRECTION_NORTH)
+			dY--;
+		    else if (door.direction === dungeont.DIRECTION_EAST)
+			dX++;
+		    else if (door.direction === dungeont.DIRECTION_SOUTH)
+			dY++;
+		    else
+			dX--;
+		    if (!door.connected)
+			createPath(door.x + dX, door.y + dY, 
+				   (door.direction + 2) % 4, true);
+		}
+	    }
 	}
     };
 };
