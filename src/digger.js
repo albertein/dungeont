@@ -34,13 +34,7 @@ dungeont.digger = function() {
 		    dungeont.DIRECTION_WEST
 		];
 		//shuffle the direction array to spice a little bit the dungeon
-		for (var i = 0; i < directions.length; i++) { 
-		    var newPosition = dungeont.random(directions.length);
-		    var a = directions[i];
-		    var b = directions[newPosition];
-		    directions[newPosition] = a;
-		    directions[i] = b;
-		}
+		dungeont.shuffle(directions);
 		console.log(directions);
 		var cellType = dungeont.game.map[startX][startY] &
 		    dungeont.MAP_MASK;
@@ -66,7 +60,7 @@ dungeont.digger = function() {
 		    var y = startY;
 		    var points = [];
 		    var doorInPath = false;
-		    for (var j = 0; j < 4; j++) {
+		    for (var j = 0; j < dungeont.game.corridorBaseSize; j++) {
 			x += deltaX;
 			y += deltaY;
 			var cellType = dungeont.game.getCellType(x, y);
