@@ -24,6 +24,14 @@ dungeont.log = function() {
 dungeont.random = function(maxNumber) {
     return Math.floor(Math.random() * maxNumber);
 }
+dungeont.shuffle = function(array) {
+    for (var i = 0; i < array.length; i++) {
+	var j = dungeont.random(array.length);
+	var tmp = array[i];
+	array[i] = array[j];
+	array[j] = array[i];
+    }
+};
 dungeont.game  = (function() {
     var canvas = null;
     var ctx = null;
@@ -101,6 +109,7 @@ dungeont.game  = (function() {
 	},
 	getCellType: function(x, y) {
 	    return map[x][y] & dungeont.MAP_MASK;
-	}
+	},
+	corridorBaseSize: 4
     };
 })();
