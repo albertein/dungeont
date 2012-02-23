@@ -29,7 +29,7 @@ dungeont.shuffle = function(array) {
 	var j = dungeont.random(array.length);
 	var tmp = array[i];
 	array[i] = array[j];
-	array[j] = array[i];
+	array[j] = tmp;
     }
 };
 dungeont.game  = (function() {
