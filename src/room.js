@@ -92,26 +92,3 @@ dungeont.room = function(x, y, width, height) {
 	}
     };
 };
-
-dungeont.corridor = function(x, y, direction, length) {
-    var width = 1;
-    var height = 1;
-    if (direction === dungeont.DIRECTION_NORTH) {
-	height = length;
-	y -= length - 1;
-    } else if (direction === dungeont.DIRECTION_EAST) {
-	width = length;
-    } else if (direction === dungeont.DIRECTION_SOUTH) {
-	height = length;
-    } else { //DIRECTION_WEST
-	width = length;
-	x -= length - 1;
-    }
-    dungeont.log("W", width, "H", height, "L", length);
-    var corridor = dungeont.room(x, y, width, height);
-    var room_paint = corridor.paint;
-    corridor.paint = function() {
-	room_paint("green");
-    };
-    return corridor;
-};
