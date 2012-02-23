@@ -76,7 +76,6 @@ dungeont.game  = (function() {
     };
 
     var render = function() {
-	console.log(dungeont.game.map);
 	paintBackground();
 	for (var i = 0; i < map.length; i++) {
 	    for (var j = 0; j < map[i].length; j++) {

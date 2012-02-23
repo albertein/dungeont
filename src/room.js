@@ -42,7 +42,8 @@ dungeont.room = function(x, y, width, height) {
 		var calcDoorPosition = function (baseCoord, baseDimention) {
 		    var posibleDoors = [];
 		    for (var j = 0; j < baseDimention; j++)  
-			if (((baseCoord + j) - 1) % 4 === 0)
+			if (((baseCoord + j) - 1) % 
+			    dungeont.game.corridorBaseSize === 0)
 			    posibleDoors.push(baseCoord + j);
 		    if (posibleDoors.length === 0)
 			return -1;
@@ -64,7 +65,6 @@ dungeont.room = function(x, y, width, height) {
 		if (doorX === -1 || doorY === -1)
 		    continue; //Cannot place door at this position
 		doors--;
-		dungeont.log("x", doorX, "y", doorY);
 		dungeont.game.map[doorX][doorY] = dungeont.MAP_DOOR;
 	    }
 

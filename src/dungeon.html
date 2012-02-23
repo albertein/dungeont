@@ -9,7 +9,6 @@
       $(document).ready(function() {
           var canvas = $("#canvas")[0];
           dungeont.game.init(canvas);
-          $("#refresh-button").click(function(){game.init();});
       });
     </script>
     <script type="text/javascript" src="dungeon.js"></script>
@@ -19,6 +18,5 @@
 </head>
 <body>
     <canvas id="canvas" width="810" height="600"></canvas>
-    <div style="float: right;"><button value="refresh" id="refresh-button"></div>
 </body>
 </html>
