@@ -3,6 +3,7 @@ dungeont.DIRECTION_NORTH = 0;
 dungeont.DIRECTION_EAST = 1;
 dungeont.DIRECTION_SOUTH = 2;
 dungeont.DIRECTION_WEST = 3;
+dungeont.DIRECTION_NONE = 4;
 dungeont.MAP_EMPTY = 0;
 dungeont.MAP_WALL = 1;
 dungeont.MAP_ROOM = 2;
@@ -60,23 +61,31 @@ dungeont.game  = (function() {
         ctx.fillRect(0, 0, width, height);
         ctx.strokeStyle = "gray";
         for (var i = cellSize; i < width; i += cellSize) {
-            ctx.moveTo(i, 0);
+            ctx.beginPath();
+	    ctx.moveTo(i, 0);
             ctx.lineTo(i, height);
+	    ctx.closePath();
             ctx.stroke();
         }
         for (var i = cellSize; i < height; i += cellSize) {
+	    ctx.beginPath();
             ctx.moveTo(0, i);
             ctx.lineTo(width, i);
+	    ctx.closePath();
             ctx.stroke();
         }
     };
 
     var paintCell = function(x, y, color) {
+	x = Math.floor(x);
+	y = Math.floor(y);
 	ctx.fillStyle = color;
         ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
     };
 
     var render = function() {
+	dungeont.player.tick();
+	var last = new Date();
 	paintBackground();
 	for (var i = 0; i < map.length; i++) {
 	    for (var j = 0; j < map[i].length; j++) {
@@ -93,6 +102,16 @@ dungeont.game  = (function() {
 		paintCell(i, j, colors[cellType]);
 	    }
 	}
+
+
+	var pp = dungeont.player.possiblePositions();
+	for (var i = 0; i < pp.length; i++) {
+	    paintCell(pp[i].x, pp[i].y, "blue");
+	}
+	paintCell(dungeont.player.x(), dungeont.player.y(), "yellow");
+	paintCell(dungeont.mouse.x / cellSize, dungeont.mouse.y / cellSize,
+		  "pink");
+	setTimeout(render, 60 / 1000);
     }
 
     return {
@@ -117,6 +136,12 @@ dungeont.game  = (function() {
 		if (rooms[i].contains(x, y, includeWall))
 		    return rooms[i];
 	    return null;
+	},
+	cordsToCell: function(pointX, pointY) {
+	    return {
+		x: Math.floor(pointX / cellSize),
+		y: Math.floor(pointY / cellSize)
+	    };
 	},
 	render: render
     };

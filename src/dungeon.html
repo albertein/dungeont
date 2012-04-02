@@ -8,13 +8,21 @@
       
       $(document).ready(function() {
           var canvas = $("#canvas")[0];
+          var offset = $("#canvas").offset();
+          dungeont.mouse = { x: 0, y: 0, clicked: false};
+          $(document).mousemove(function(event) {
+              dungeont.mouse.x = event.pageX - offset.left;
+              dungeont.mouse.y = event.pageY - offset.top;
+          }).click(function(event) {
+              dungeont.mouse.clicked = true; 
+          });
           dungeont.game.init(canvas);
       });
     </script>
     <script type="text/javascript" src="dungeon.js"></script>
     <script type="text/javascript" src="room.js"></script>
     <script type="text/javascript" src="digger.js"></script>
-
+    <script type="text/javascript" src="player.js"></script>
 </head>
 <body>
     <canvas id="canvas" width="810" height="600"></canvas>
