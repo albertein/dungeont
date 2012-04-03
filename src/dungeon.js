@@ -9,7 +9,8 @@ dungeont.MAP_WALL = 1;
 dungeont.MAP_ROOM = 2;
 dungeont.MAP_CORRIDOR = 3;
 dungeont.MAP_DOOR = 4;
-dungeont.MAP_SPECIAL = 5;
+dungeont.MAP_OPEN_DOOR = 5;
+dungeont.MAP_SPECIAL = 6;
 dungeont.MAP_MASK = 0x7;
 dungeont.log = function() {
     if (!console)
@@ -97,7 +98,8 @@ dungeont.game  = (function() {
 		colors[dungeont.MAP_WALL] = "rgb(60, 60, 60)";
 		colors[dungeont.MAP_ROOM] = "white";
 		colors[dungeont.MAP_CORRIDOR] = "white";
-		colors[dungeont.MAP_DOOR] = "white";
+		colors[dungeont.MAP_DOOR] = "green";
+		colors[dungeont.MAP_OPEN_DOOR] = "white";
 		colors[dungeont.MAP_SPECIAL] = "red";
 		paintCell(i, j, colors[cellType]);
 	    }

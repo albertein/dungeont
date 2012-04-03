@@ -4,6 +4,17 @@ dungeont.player = (function() {
     var inited = false;
     var possiblePositions = [];
     var move = function() {
+	var doorPositions = [
+	    {x: posX + 1, y: posY},
+	    {x: posX - 1, y: posY},
+	    {x: posX, y: posY + 1},
+	    {x: posX, y: posY - 1}];
+	for (var i = 0; i < doorPositions.length; i++) {
+	    var pos = doorPositions[i];
+	    if ((dungeont.game.map[pos.x][pos.y] & dungeont.MAP_MASK) ===
+		dungeont.MAP_DOOR)
+		dungeont.game.map[pos.x][pos.y] = dungeont.MAP_OPEN_DOOR;
+	}
 	possiblePositions = [];
 	var walker = function(x, y, direction, steps) {
 	    var cell = dungeont.game.map[x][y] & dungeont.MAP_MASK;
