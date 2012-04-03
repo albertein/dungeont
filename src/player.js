@@ -16,25 +16,41 @@ dungeont.player = (function() {
 		dungeont.game.map[pos.x][pos.y] = dungeont.MAP_OPEN_DOOR;
 	}
 	possiblePositions = [];
-	var walker = function(x, y, direction, steps) {
+	var walker = function(x, y, direction, steps, initial) {
 	    var cell = dungeont.game.map[x][y] & dungeont.MAP_MASK;
 	    if (steps == 0)
 		return;
-	    if (cell === dungeont.MAP_CORRIDOR) {
+	    steps--;
+	    var next = function(x, y, direction) {
 		possiblePositions.push({x: x, y: y});
-		steps--;
-		if (direction !== dungeont.DIRECTION_NORTH)
-		    walker(x, y - 1, dungeont.DIRECTION_SOUTH, steps);
-		if (direction !== dungeont.DIRECTION_SOUTH) 		
-		    walker(x, y + 1, dungeont.DIRECTION_NORTH, steps);
-		if (direction !== dungeont.DIRECTION_WEST)
-		    walker(x + 1, y, dungeont.DIRECTION_EAST, steps);
+		if (direction !== dungeont.DIRECTION_SOUTH)
+		    walker(x, y - 1, dungeont.DIRECTION_NORTH, steps);
+		if (direction !== dungeont.DIRECTION_NORTH) 		
+		    walker(x, y + 1, dungeont.DIRECTION_SOUTH, steps);
 		if (direction !== dungeont.DIRECTION_EAST)
-		    walker(x - 1, y, dungeont.DIRECTION_WEST, steps);
+		    walker(x + 1, y, dungeont.DIRECTION_WEST, steps);
+		if (direction !== dungeont.DIRECTION_WEST)
+		    walker(x - 1, y, dungeont.DIRECTION_EAST, steps);
+	    };
+	    if (cell === dungeont.MAP_CORRIDOR) {
+		next(x, y, direction);
+	    } else if (cell === dungeont.MAP_OPEN_DOOR ||
+		       (cell === dungeont.MAP_ROOM && initial)) {
+		var room = dungeont.game.roomAtPoint(x, y, true);
+		for (var i = 0; i < room.width; i++)
+		    for (var j = 0; j < room.height; j++)
+			possiblePositions.push({x: room.x + i, y: room.y + j});
+		for(var i = 0; i < room.doors.length; i++) {
+		    var door = room.doors[i];
+		    if ((dungeont.game.map[door.x][door.y] & dungeont.MAP_MASK)
+			=== dungeont.MAP_DOOR)
+			continue;
+		    next(door.x, door.y, dungeont.DIRECTION_NONE);
+		}
 	    }
 	};
 
-	walker(posX, posY, dungeont.DIRECTION_NONE, 6);
+	walker(posX, posY, dungeont.DIRECTION_NONE, 6, true);
     };
 
     return {
