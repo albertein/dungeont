@@ -38,14 +38,18 @@ dungeont.shuffle = function(array) {
 dungeont.game  = (function() {
     var canvas = null;
     var ctx = null;
-    var width = 810;
-    var height = 600;
-    var cellSize = 10;
-    var horizontalCells = width / cellSize;
-    var verticalCells = height / cellSize;
+    var width = 800;
+    var height = 608;
+    var cellSize = 32;
+    var horizontalCells = 80;
+    var verticalCells = 61;
     var rooms = [];
     var corridors = [];
     var map = new Array(horizontalCells);
+    var tileset = new Image();
+    tileset.src = 'tiles.gif';
+    var characters = new Image();
+    characters.src = 'characters.gif';
     for (var i = 0; i < horizontalCells; i++) {
 	map[i] = new Array(verticalCells);
 	for (var j = 0; j < verticalCells; j++) {
@@ -78,10 +82,24 @@ dungeont.game  = (function() {
     };
 
     var paintCell = function(x, y, color) {
-	x = Math.floor(x);
-	y = Math.floor(y);
+	x = Math.floor(x) * cellSize;
+	y = Math.floor(y) * cellSize;
+	x -= dungeont.camera.x();
+	y -= dungeont.camera.y();
 	ctx.fillStyle = color;
-        ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        ctx.fillRect(x, y, cellSize, cellSize);
+    };
+    var tileCell = function(x, y, offsetX, offsetY, useCharacter) {
+	var image = tileset;
+	if (useCharacter)
+	    image = characters;
+	x = Math.floor(x) * cellSize;
+	y = Math.floor(y) * cellSize;
+	x -= dungeont.camera.x();
+	y -= dungeont.camera.y();
+	ctx.drawImage(image, offsetX * 32, offsetY * 32,
+		      32, 32, x, y, 
+		      cellSize, cellSize);
     };
 
     var render = function() {
@@ -90,10 +108,10 @@ dungeont.game  = (function() {
 	paintBackground();
 	for (var i = 0; i < map.length; i++) {
 	    for (var j = 0; j < map[i].length; j++) {
+		if (!dungeont.camera.pointOnCamera(i * cellSize, j * cellSize))
+		    continue;
 		var cell = map[i][j];
 		var cellType = cell & dungeont.MAP_MASK;
-		if (cellType === dungeont.MAP_EMPTY)
-		    continue;
 		var colors = [];
 		colors[dungeont.MAP_WALL] = "rgb(60, 60, 60)";
 		colors[dungeont.MAP_ROOM] = "white";
@@ -101,18 +119,31 @@ dungeont.game  = (function() {
 		colors[dungeont.MAP_DOOR] = "green";
 		colors[dungeont.MAP_OPEN_DOOR] = "white";
 		colors[dungeont.MAP_SPECIAL] = "red";
-		paintCell(i, j, colors[cellType]);
+		if (cellType === dungeont.MAP_CORRIDOR) 
+		    tileCell(i, j, 4, 6);
+		else if(cellType === dungeont.MAP_DOOR)
+		    tileCell(i, j, 3, 0);
+		else if(cellType === dungeont.MAP_OPEN_DOOR)
+		    tileCell(i, j, 4, 0);
+		else if(cellType === dungeont.MAP_WALL)
+		    tileCell(i, j, 0, 3);
+		else if(cellType === dungeont.MAP_EMPTY)
+		    tileCell(i, j, 0, 0);
+		else if(cellType === dungeont.MAP_ROOM)
+		    tileCell(i, j, 6, 5);
+		else paintCell(i, j, colors[cellType]);
 	    }
 	}
 
 
 	var pp = dungeont.player.possiblePositions();
 	for (var i = 0; i < pp.length; i++) {
-	    paintCell(pp[i].x, pp[i].y, "blue");
+	    paintCell(pp[i].x, pp[i].y, "rgba(0,0,255,0.2)");
 	}
-	paintCell(dungeont.player.x(), dungeont.player.y(), "yellow");
-	paintCell(dungeont.mouse.x / cellSize, dungeont.mouse.y / cellSize,
-		  "pink");
+	tileCell(dungeont.player.x(), dungeont.player.y(), 4, 0, true);
+	paintCell((dungeont.mouse.x + dungeont.camera.x()) / cellSize, 
+		  (dungeont.mouse.y + dungeont.camera.y()) / cellSize,
+		  "rgba(0, 255, 0, .3)");
 	setTimeout(render, 60 / 1000);
     }
 
@@ -140,11 +171,16 @@ dungeont.game  = (function() {
 	    return null;
 	},
 	cordsToCell: function(pointX, pointY) {
+	    pointX += dungeont.camera.x();
+	    pointY += dungeont.camera.y();
 	    return {
 		x: Math.floor(pointX / cellSize),
 		y: Math.floor(pointY / cellSize)
 	    };
 	},
-	render: render
+	render: render,
+	sceneWidth: width,
+	sceneHeight: height,
+	cellSize: cellSize
     };
 })();

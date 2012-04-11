@@ -4,6 +4,7 @@ dungeont.player = (function() {
     var inited = false;
     var possiblePositions = [];
     var move = function() {
+	dungeont.camera.characterMoved(posX, posY);
 	var doorPositions = [
 	    {x: posX + 1, y: posY},
 	    {x: posX - 1, y: posY},
@@ -59,6 +60,8 @@ dungeont.player = (function() {
 	tick: function() {
 	    if (!inited) {
 		inited = true;
+		posX = dungeont.game.initialPosition.x;
+		posY = dungeont.game.initialPosition.y;
 		move();
 	    }
 	    if (!dungeont.mouse.clicked) 

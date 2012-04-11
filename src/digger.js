@@ -115,7 +115,10 @@ dungeont.digger = function() {
 
 		return foundDoor;
 	    };
+	    
+	    
 	    createPath(1, 1, dungeont.DIRECTION_NORTH);
+	    dungeont.game.initialPosition = {x: 1, y: 1};
 	    //Fix the unconnected doors to try to connect them to the main dungeon
 	    for (var i = 0; i < dungeont.game.rooms.length; i++) {
 		var room = dungeont.game.rooms[i];
