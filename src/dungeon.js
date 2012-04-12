@@ -138,7 +138,9 @@ dungeont.game  = (function() {
 
 	var pp = dungeont.player.possiblePositions();
 	for (var i = 0; i < pp.length; i++) {
-	    paintCell(pp[i].x, pp[i].y, "rgba(0,0,255,0.2)");
+	    if (dungeont.camera.pointOnCamera(pp[i].x * dungeont.game.cellSize,
+					      pp[i].y * dungeont.game.cellSize))
+		paintCell(pp[i].x, pp[i].y, "rgba(0,0,255,0.2)");
 	}
 	tileCell(dungeont.player.x(), dungeont.player.y(), 4, 0, true);
 	paintCell((dungeont.mouse.x + dungeont.camera.x()) / cellSize, 
