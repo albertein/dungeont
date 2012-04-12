@@ -2,8 +2,8 @@ dungeont.camera = (function() {
     var x = 0;
     var y = 0;
     var pointOnCamera = function(pointX, pointY) {
-	return pointX >= x && pointX <= x + dungeont.game.sceneWidth &&
-	    pointY >= y && pointY <= y + dungeont.game.sceneHeight;
+	return pointX >= x && pointX < x + dungeont.game.sceneWidth &&
+	    pointY >= y && pointY < y + dungeont.game.sceneHeight;
     };
     var characterMoved = function(charX, charY) {
 	var offScreenPercent = .2;
