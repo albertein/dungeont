@@ -143,9 +143,10 @@ dungeont.game  = (function() {
 		paintCell(pp[i].x, pp[i].y, "rgba(0,0,255,0.2)");
 	}
 	tileCell(dungeont.player.x(), dungeont.player.y(), 4, 0, true);
-	paintCell((dungeont.mouse.x + dungeont.camera.x()) / cellSize, 
-		  (dungeont.mouse.y + dungeont.camera.y()) / cellSize,
-		  "rgba(0, 255, 0, .3)");
+	if (dungeont.camera.pointOnCamera(dungeont.mouse.x, dungeont.mouse.y))
+	    paintCell((dungeont.mouse.x + dungeont.camera.x()) / cellSize, 
+		      (dungeont.mouse.y + dungeont.camera.y()) / cellSize,
+		      "rgba(0, 255, 0, .3)");
 	setTimeout(render, 60 / 1000);
     }
 
